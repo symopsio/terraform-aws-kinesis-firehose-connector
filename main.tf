@@ -9,19 +9,21 @@ module "s3_bucket" {
   enabled            = true # Create resources
   versioning_enabled = false
 
-  name               = "firehose-logs"
-  namespace          = "sym"
-  stage              = var.environment
+  name      = "firehose-logs"
+  namespace = "sym"
+  stage     = var.environment
 
   # S3 Bucket names must be globally unique across all AWS accounts. Suffix the account ID to ensure uniqueness
-  bucket_name        = "${lower(var.name_prefix)}sym-firehose-logs-${var.environment}-${data.aws_caller_identity.current.account_id}"
+  bucket_name = "${lower(var.name_prefix)}sym-firehose-logs-${var.environment}-${data.aws_caller_identity.current.account_id}"
 
-  additional_tag_map = var.tags
+  tags = var.tags
 }
 
 # The IAM role the Firehose will assume
 resource "aws_iam_role" "firehose_role" {
   name = "${var.name_prefix}SymKinesisFirehoseRole${title(var.environment)}"
+
+  tags = var.tags
 
   assume_role_policy = <<EOF
 {
@@ -45,6 +47,7 @@ resource "aws_iam_policy" "firehose_s3_access" {
 
   path        = "/sym/"
   description = "Policy granting access to write to S3 bucket"
+  tags        = var.tags
   policy      = <<EOT
 {
   "Version": "2012-10-17",
