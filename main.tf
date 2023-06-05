@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 
 module "s3_bucket" {
   source  = "cloudposse/s3-bucket/aws"
-  version = "0.44.0"
+  version = "3.1.2"
 
   acl                = "private"
   enabled            = true # Create resources
